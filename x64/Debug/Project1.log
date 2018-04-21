@@ -1,0 +1,22 @@
+﻿  Source.cpp
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(25): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(26): warning C4244: 'initializing': conversion from 'double' to 'll', possible loss of data
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\polinom.cpp(387): warning C4018: '>=': signed/unsigned mismatch
+  d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\polinom.cpp(386): note: while compiling class template member function 'PoliList::Monom<T> &PoliList::Polinom<T>::operator [](int)'
+          with
+          [
+              T=double
+          ]
+  d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(66): note: see reference to function template instantiation 'PoliList::Monom<T> &PoliList::Polinom<T>::operator [](int)' being compiled
+          with
+          [
+              T=double
+          ]
+  d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(62): note: see reference to class template instantiation 'PoliList::Polinom<double>' being compiled
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\polinom.cpp(122): warning C4715: 'PoliList::Polinom<double>::operator=': not all control paths return a value
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\polinom.cpp(135): warning C4715: 'PoliList::Polinom<double>::operator=': not all control paths return a value
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\polinom.cpp(122): warning C4715: 'PoliList::Polinom<int>::operator=': not all control paths return a value
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\polinom.cpp(135): warning C4715: 'PoliList::Polinom<int>::operator=': not all control paths return a value
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\polinom.cpp(20): warning C4715: 'PoliList::Polinom<double>::iterator::operator=': not all control paths return a value
+  Project1.vcxproj -> D:\Diverse\Facultate\An 1 sem 2\POO\Laborator - Seminar\Tema 2 - Polinom\Project1\x64\Debug\Project1.exe

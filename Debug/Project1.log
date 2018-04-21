@@ -1,0 +1,5 @@
+﻿  Source.cpp
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(22): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'll', possible loss of data
+d:\diverse\facultate\an 1 sem 2\poo\laborator - seminar\tema 2 - polinom\project1\source.cpp(24): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Project1.vcxproj -> D:\Diverse\Facultate\An 1 sem 2\POO\Laborator - Seminar\Tema 2 - Polinom\Project1\Debug\Project1.exe

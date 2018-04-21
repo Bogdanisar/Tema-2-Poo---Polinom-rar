@@ -1,0 +1,667 @@
+#include <bits/stdc++.h>
+ 
+using namespace std;
+ 
+#if 1
+    #define pv(x) cout<<#x<<" = "<<x<<"; ";cout.flush()
+    #define pn cout<<endl
+#else
+    #define pv(x)
+    #define pn
+#endif
+ 
+#ifdef ONLINE_JUDGE
+    #define in cin
+    #define out cout
+#else
+    ifstream in("plimbare.in");
+    ofstream out("plimbare.out");
+#endif
+ 
+using ll = long long;
+using ull = unsigned long long;
+using uint = unsigned int;
+#define pb push_back
+#define mp make_pair
+const int NMax = 1e2 + 5;
+const ll inf_ll = 1e18 + 5;
+const int inf_int = 1e9 + 5;
+const int mod = 100003;
+const double eps = 1e-7;
+using zint = int;
+ 
+# 1 "list.h"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "list.h"
+       
+# 1 "DoubleNode.h" 1
+       
+# 1 "SimpleNode.h" 1
+       
+
+
+
+namespace PoliList {
+ template<typename T>
+ class SimpleNode {
+ public:
+  T info;
+  SimpleNode* nxt;
+
+ public:
+
+  SimpleNode(T _info = T());
+  SimpleNode(const SimpleNode&);
+  virtual SimpleNode& operator= (const SimpleNode& other);
+
+
+  template<typename U>
+  friend std::istream& operator>> (std::istream&, SimpleNode<U>&);
+
+  template<typename U>
+  friend std::ostream& operator<< (std::ostream&, SimpleNode<U>&);
+
+
+  virtual ~SimpleNode();
+ };
+
+# 1 "SimpleNode.cpp" 1
+       
+
+template<typename T>
+SimpleNode<T>::SimpleNode(T _info) :
+ info(_info), nxt(nullptr) {
+}
+
+template<typename T>
+SimpleNode<T>::SimpleNode(const SimpleNode& other) :
+ info(other.info), nxt(other.nxt) {}
+
+template<typename T>
+SimpleNode<T>& SimpleNode<T>::operator= (const SimpleNode& other) {
+ if (this == &other) {
+  return *this;
+ }
+
+ info = other.info;
+ nxt = other.nxt;
+ return *this;
+}
+
+
+template<typename T>
+std::istream& operator>> (std::istream& in, SimpleNode<T>& node) {
+ in >> node.info;
+ return in;
+}
+
+template<typename T>
+std::ostream& operator<< (std::ostream& out, SimpleNode<T>& node) {
+ out << node.info;
+ return out;
+}
+
+template<typename T>
+SimpleNode<T>::~SimpleNode() {}
+# 30 "SimpleNode.h" 2
+}
+# 3 "DoubleNode.h" 2
+
+
+namespace PoliList {
+
+ template<typename T>
+ class DoubleNode : public SimpleNode<T> {
+ public:
+  SimpleNode<T>* prv;
+
+ public:
+  DoubleNode(T _info = T());
+  DoubleNode(const DoubleNode&);
+
+  virtual DoubleNode& operator= (const DoubleNode& other);
+
+  template<typename U>
+  friend std::istream& operator>> (std::istream&, DoubleNode<U>&);
+
+  template<typename U>
+  friend std::ostream& operator<< (std::ostream&, DoubleNode<U>&);
+
+  virtual ~DoubleNode();
+ };
+
+# 1 "DoubleNode.cpp" 1
+       
+
+template<typename T>
+DoubleNode<T>::DoubleNode(T _info):
+ SimpleNode<T>(_info), prv(nullptr) {}
+
+template<typename T>
+DoubleNode<T>::DoubleNode(const DoubleNode<T>& other):
+ SimpleNode<T>(other), prv(other.prv) {}
+
+template<typename T>
+DoubleNode<T>& DoubleNode<T>::operator= (const DoubleNode<T>& other) {
+ if (this == &other) {
+  return *this;
+ }
+
+
+ SimpleNode<T>::operator=(other);
+ prv = other.prv;
+
+ return *this;
+}
+
+template<typename T>
+std::istream& operator>> (std::istream& in, DoubleNode<T>& node) {
+ in >> (SimpleNode<T>&)node;
+ return in;
+}
+
+
+template<typename T>
+std::ostream& operator<< (std::ostream& out, DoubleNode<T>& node) {
+ out << (SimpleNode<T>&)node;
+
+ return out;
+}
+
+
+template<typename T>
+DoubleNode<T>::~DoubleNode() {
+
+}
+# 28 "DoubleNode.h" 2
+}
+# 3 "list.h" 2
+
+
+namespace PoliList {
+ template<typename T>
+ class list {
+ public:
+  class iterator;
+
+ private:
+  unsigned sz;
+  DoubleNode<T> *sentinel;
+  void initialize();
+
+ public:
+  list();
+  list(unsigned, const T&);
+  list(const list&);
+
+  list& operator=(const list&);
+
+  void push_front(const T&);
+  void push_back(const T&);
+  void pop_front();
+  void pop_back();
+  void add(const iterator&, const T&);
+  void erase(const iterator&);
+  unsigned size();
+  void clear();
+  iterator begin();
+  iterator end();
+
+  ~list();
+ };
+
+# 1 "list.cpp" 1
+
+
+template<typename T>
+class list<T>::iterator {
+ DoubleNode<T>* ptr;
+
+ friend list<T>;
+
+private:
+ iterator() : ptr(nullptr) {}
+ iterator(DoubleNode<T>* _ptr) : ptr(_ptr) {}
+
+public:
+
+ const iterator& operator++ () {
+  if (ptr == nullptr) {
+   throw exception("Can't move null iterator!");
+  }
+  ptr = (DoubleNode<T>*)ptr->nxt;
+  return *this;
+ }
+
+ iterator operator++ (int) {
+  iterator ret(*this);
+  this->operator++();
+  return ret;
+ }
+
+ const iterator& operator-- () {
+  if (ptr == nullptr) {
+   throw exception("Can't move null iterator!");
+  }
+  ptr = (DoubleNode<T>*)ptr->prv;
+  return *this;
+ }
+
+ iterator operator-- (int) {
+  iterator ret(*this);
+  this->operator--();
+  return ret;
+ }
+
+ bool operator== (const iterator& other) const {
+  return ptr == other.ptr;
+ }
+
+ bool operator!= (const iterator& other) const {
+  return !((*this) == other);
+ }
+
+ T& operator* () {
+  return ptr->info;
+ }
+};
+
+template<typename T>
+void list<T>::initialize() {
+ sz = 0;
+ sentinel = new DoubleNode<T>();
+ sentinel->nxt = sentinel;
+ sentinel->prv = sentinel;
+};
+
+template<typename T>
+list<T>::list() {
+ initialize();
+}
+
+template<typename T>
+list<T>::list(const list<T>& other) {
+ initialize();
+
+ for (iterator it = other.begin(); it != other.end(); ++it) {
+  push_back(*it);
+ }
+}
+
+template<typename T>
+list<T>::list(unsigned sz, const T& element) {
+ initiliaze();
+
+ for (unsigned i = 0; j < sz; ++i) {
+  push_back(element);
+ }
+}
+
+template<typename T>
+list<T>& list<T>::operator= (const list<T>& other) {
+ if (this == &other) {
+  return *this;
+ }
+
+ ~list();
+ initialize();
+
+ for (iterator it = other.begin(); it != other.end(); ++it) {
+  push_back(*it);
+ }
+
+ return *this;
+}
+
+template<typename T>
+void list<T>::push_front(const T& element) {
+ add(begin(), element);
+}
+
+template<typename T>
+void list<T>::push_back(const T& element) {
+ add(sentinel, element);
+}
+
+template<typename T>
+void list<T>::pop_front() {
+ if (sz == 0) {
+  throw std::length_error("List is empty! Can't pop!");
+ }
+
+ erase(begin());
+}
+
+template<typename T>
+void list<T>::pop_back() {
+ if (sz == 0) {
+  throw std::length_error("List is empty! Can't pop!");
+ }
+
+ iterator it = end();
+ --it;
+ erase(it);
+}
+
+template<typename T>
+unsigned list<T>::size() {
+ return sz;
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::begin() {
+ iterator it(sentinel);
+ ++it;
+ return it;
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::end() {
+ return iterator(sentinel);
+}
+
+template<typename T>
+void list<T>::add(const iterator& it, const T& elem) {
+ ++sz;
+ DoubleNode<T>* aux = new DoubleNode<T>(elem);
+ aux->nxt = it.ptr;
+ aux->prv = it.ptr->prv;
+ it.ptr->prv->nxt = aux;
+ it.ptr->prv = aux;
+}
+
+template<typename T>
+void list<T>::erase(const iterator& it) {
+ if (it == end()) {
+  throw std::exception("Can't delete end()!");
+ }
+ --sz;
+
+ DoubleNode<T>* aux = it.ptr;
+ it.ptr->prv->nxt = it.ptr->nxt;
+ ((DoubleNode<T>*)it.ptr->nxt)->prv = (DoubleNode<T>*)(it.ptr->prv);
+ delete aux;
+}
+
+template<typename T>
+void list<T>::clear() {
+ while (sz) {
+  pop_back();
+ }
+}
+
+template<typename T>
+list<T>::~list() {
+ clear();
+ delete sentinel;
+}
+# 38 "list.h" 2
+}
+
+ using namespace PoliList;
+ 
+// observatii:
+// - intotdeauna se poate obtine un ciclu hamiltonian
+// daca suntem intr-o componenta tare conexa dupa algoritmul de mai jos;
+// - un ciclu nu poate trece prin mai multe componente tare conexe
+// (caci astfel am avea o componenta tare conexa mai mare);
+ 
+// deci gasim cea mai mare componenta tare conexa si construim
+// un ciclu care contine toate nodurile din aceasta;
+ 
+int dad[NMax],a[NMax][NMax],compOf[NMax];
+bool vis[NMax],inCycle[NMax],inStack[NMax];
+vector<int> adj[NMax],rev[NMax],comp[NMax];
+ 
+// pentru algoritmul lui Kosaraju de determinare a componentelor tare conexe;
+void buildStack(int node, stack<int>& st) {
+    inStack[node] = true;
+ 
+    for (int nxt : adj[node]) {
+        if (inStack[nxt]) {
+            continue;
+        }
+ 
+        buildStack(nxt, st);
+    }
+ 
+    st.push(node);
+}
+ 
+// pentru algoritmul lui Kosaraju de determinare a componentelor tare conexe;
+void buildComp(int node, const int nrComp) {
+    compOf[node] = nrComp;
+    comp[nrComp].pb(node);
+ 
+    for (int nxt : rev[node]) {
+        if (compOf[nxt]) {
+            continue;
+        }
+ 
+        buildComp(nxt, nrComp);
+    }
+}
+ 
+// gaseste un ciclu oarecare in componenta maxima;
+int getCycle(int node) {
+    vis[node] = true;
+    inStack[node] = true;
+ 
+    for (int nxt : adj[node]) {
+        if (inStack[nxt]) {
+            dad[nxt] = node;
+            return node;
+        }
+        if (vis[nxt]) {
+            continue;
+        }
+ 
+        dad[nxt] = node;
+        int ret = getCycle(nxt);
+        if (ret != -1) {
+            return ret;
+        }
+    }
+ 
+    inStack[node] = false;
+    return -1;
+}
+ 
+// odata gasit un ciclu, toate celelalte noduri se impart in 3 categorii:
+// - cele care au muchii doar catre ciclu (A);
+// - cele care au muchii doar de la ciclu (B);
+// - cele care au ambele (C);
+ 
+// functie care adauga toate nodurile de tip C la ciclu;
+void addBothDirections(const int maxComp, list<int>& cycle) {
+ 
+    for (int node : comp[maxComp]) {
+        if (inCycle[node]) {
+            continue;
+        }
+        int toCycleIdx = 0,fromCycleIdx = 0;
+ 
+        for (int nxt : adj[node]) {
+            if (inCycle[nxt]) {
+                toCycleIdx = nxt;
+                break;
+            }
+        }
+ 
+        if (!toCycleIdx) {
+            continue;
+        }
+ 
+        for (int nxt : rev[node]) {
+            if (inCycle[nxt]) {
+                fromCycleIdx = nxt;
+                break;
+            }
+        }
+ 
+        if (!fromCycleIdx) {
+            continue;
+        }
+ 
+        // am gasit ca node e nod de tip C;
+        // sigur vom avea o pozitie unde se poate insera in ciclu;
+ 
+        if (a[cycle.back()][node] == 1 && a[node][cycle.front()] == 1) {
+            cycle.push_back(node);
+            inCycle[node] = true;
+            continue;
+        }
+ 
+        for (auto it = cycle.begin();it != cycle.end();++it) {
+ 
+            if (a[*it][node] == 1 && a[node][ *next(it, 1) ] == 1) {
+                cycle.insert( next(it, 1) , node);
+                break;
+            }
+        }
+        inCycle[node] = true;
+    }
+}
+ 
+int main() {
+    int N,M;
+    in >> N;
+    M = N*(N-1)/2;
+ 
+    int nrComp = 0;
+ 
+    for (int i = 1;i <= M;++i) {
+        int x,y;
+        in >> x >> y;
+ 
+        adj[x].pb(y);
+        rev[y].pb(x);
+    }
+ 
+    stack<int> st;
+    for (int i = 1;i <= N;++i) {
+        if (inStack[i]) {
+            continue;
+        }
+ 
+        buildStack(i, st);
+    }
+ 
+    int maxComp = 0;
+    while (st.size()) {
+        int node = st.top(); st.pop();
+        if (compOf[node]) {
+            continue;
+        }
+ 
+        ++nrComp;
+        buildComp(node, nrComp);
+        if (comp[maxComp].size() < comp[nrComp].size()) {
+            maxComp = nrComp;
+        }
+    }
+ 
+    if (comp[maxComp].size() == 1) {
+        out << 1 << '\n' << comp[maxComp][0];
+        return 0;
+    }
+ 
+    // elimina toate muchiile care nu fac parte din componenta maxima gasita;
+    for (int node : comp[maxComp]) {
+        for (int i = 0;i < adj[node].size(); ++i) {
+            int nxt = adj[node][i];
+            if (compOf[nxt] != maxComp) {
+                swap(adj[node][i], adj[node][ adj[node].size() - 1]);
+                adj[node].pop_back();
+                --i;
+            }
+            else {
+                a[node][nxt] = 1;
+                a[nxt][node] = -1;
+            }
+        }
+ 
+        for (int i = 0;i < rev[node].size(); ++i) {
+            int nxt = rev[node][i];
+            if (compOf[nxt] != maxComp) {
+                swap(rev[node][i], rev[node][ rev[node].size() - 1]);
+                rev[node].pop_back();
+                --i;
+            }
+        }
+    }
+ 
+    memset(inStack, false, sizeof(inStack));
+    int start = getCycle(comp[maxComp][0]);
+ 
+    // construieste ciclul;
+    list<int> cycle;
+    int node = start;
+    do {
+        cycle.push_front(node);
+        inCycle[node] = true;
+        node = dad[node];
+    } while(node != start);
+ 
+    int toCycle[NMax],fromCycle[NMax];
+    while (cycle.size() != comp[maxComp].size()) {
+        // adauga toate nodurile de tip C gasite;
+        addBothDirections(maxComp, cycle);
+ 
+        toCycle[0] = 0;
+        fromCycle[0] = 0;
+ 
+        // toCycle - noduri de tip A;
+        // fromCycle - noduri de tip B;
+        for (int node : comp[maxComp]) {
+            if (inCycle[node]) {
+                continue;
+            }
+            for (int nxt : adj[node]) {
+                if (inCycle[nxt]) {
+                    toCycle[++toCycle[0]] =  node;
+                    break;
+                }
+            }
+ 
+            for (int nxt : rev[node]) {
+                if (inCycle[nxt]) {
+                    fromCycle[++fromCycle[0]] = node;
+                    break;
+                }
+            }
+        }
+ 
+        // cauta un nod de tip A si un nod de tip B cu muchie spre primul
+        // (lucru care se poate deoarece componenta este tare conexa)
+        // si adauga aceasta pereche oriunde in ciclu (e.g.: la inceput);
+        // (lucru care se poate datorita proprietatilor nodurilor de tip A si B)
+ 
+        for (int i = 1;i <= fromCycle[0];++i) {
+            int from = fromCycle[i];
+            for (int j = 1;j <= toCycle[0];++j) {
+                int to = toCycle[i];
+                if (a[from][to] != 1) {
+                    continue;
+                }
+ 
+                cycle.insert(cycle.begin(), to);
+                inCycle[to] = true;
+                cycle.insert(cycle.begin(), from);
+                inCycle[from] = true;
+                goto after;
+            }
+        }
+ 
+        after:
+        int placeholder;
+    }
+ 
+    out << cycle.size() << '\n';
+    for (int node : cycle) {
+        out << node << ' ';
+    }
+ 
+    return 0;
+}

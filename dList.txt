@@ -1,0 +1,368 @@
+# 1 "dList.h"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "dList.h"
+       
+# 1 "DoubleNode.h" 1
+       
+# 1 "SimpleNode.h" 1
+       
+
+
+
+namespace PoliList {
+ template<typename T>
+ class SimpleNode {
+ public:
+  T info;
+  SimpleNode* nxt;
+
+ public:
+
+  SimpleNode(T _info = T());
+  SimpleNode(const SimpleNode&);
+  virtual SimpleNode& operator= (const SimpleNode& other);
+
+
+  template<typename U>
+  friend std::istream& operator>> (std::istream&, SimpleNode<U>&);
+
+  template<typename U>
+  friend std::ostream& operator<< (std::ostream&, SimpleNode<U>&);
+
+
+  virtual ~SimpleNode();
+ };
+
+# 1 "SimpleNode.cpp" 1
+       
+
+template<typename T>
+SimpleNode<T>::SimpleNode(T _info) :
+ info(_info), nxt(nullptr) {
+}
+
+template<typename T>
+SimpleNode<T>::SimpleNode(const SimpleNode& other) :
+ info(other.info), nxt(other.nxt) {}
+
+template<typename T>
+SimpleNode<T>& SimpleNode<T>::operator= (const SimpleNode& other) {
+ if (this == &other) {
+  return *this;
+ }
+
+ info = other.info;
+ nxt = other.nxt;
+ return *this;
+}
+
+
+template<typename T>
+std::istream& operator>> (std::istream& in, SimpleNode<T>& node) {
+ in >> node.info;
+ return in;
+}
+
+template<typename T>
+std::ostream& operator<< (std::ostream& out, SimpleNode<T>& node) {
+ out << node.info;
+ return out;
+}
+
+template<typename T>
+SimpleNode<T>::~SimpleNode() {}
+# 30 "SimpleNode.h" 2
+}
+# 3 "DoubleNode.h" 2
+
+
+namespace PoliList {
+
+ template<typename T>
+ class DoubleNode : public SimpleNode<T> {
+ public:
+  SimpleNode<T>* prv;
+
+ public:
+  DoubleNode(T _info = T());
+  DoubleNode(const DoubleNode&);
+
+  virtual DoubleNode& operator= (const DoubleNode& other);
+
+  template<typename U>
+  friend std::istream& operator>> (std::istream&, DoubleNode<U>&);
+
+  template<typename U>
+  friend std::ostream& operator<< (std::ostream&, DoubleNode<U>&);
+
+  virtual ~DoubleNode();
+ };
+
+# 1 "DoubleNode.cpp" 1
+       
+
+template<typename T>
+DoubleNode<T>::DoubleNode(T _info):
+ SimpleNode<T>(_info), prv(nullptr) {}
+
+template<typename T>
+DoubleNode<T>::DoubleNode(const DoubleNode<T>& other):
+ SimpleNode<T>(other), prv(other.prv) {}
+
+template<typename T>
+DoubleNode<T>& DoubleNode<T>::operator= (const DoubleNode<T>& other) {
+ if (this == &other) {
+  return *this;
+ }
+
+
+ SimpleNode<T>::operator=(other);
+ prv = other.prv;
+
+ return *this;
+}
+
+template<typename T>
+std::istream& operator>> (std::istream& in, DoubleNode<T>& node) {
+ in >> (SimpleNode<T>&)node;
+ return in;
+}
+
+
+template<typename T>
+std::ostream& operator<< (std::ostream& out, DoubleNode<T>& node) {
+ out << (SimpleNode<T>&)node;
+
+ return out;
+}
+
+
+template<typename T>
+DoubleNode<T>::~DoubleNode() {
+
+}
+# 28 "DoubleNode.h" 2
+}
+# 3 "dList.h" 2
+
+
+namespace PoliList {
+ template<typename T>
+ class dList {
+ public:
+  class iterator;
+
+ private:
+  unsigned sz;
+  DoubleNode<T> *sentinel;
+  void initialize();
+
+ public:
+  dList();
+  dList(unsigned, const T&);
+  dList(const dList&);
+
+  dList& operator=(const dList&);
+
+  void push_front(const T&);
+  void push_back(const T&);
+  void pop_front();
+  void pop_back();
+  void add(const iterator&, const T&);
+  void erase(const iterator&);
+  unsigned size();
+  void clear();
+  iterator begin();
+  iterator end();
+
+  ~dList();
+ };
+
+# 1 "dList.cpp" 1
+
+
+template<typename T>
+class dList<T>::iterator {
+ DoubleNode<T>* ptr;
+
+ friend dList<T>;
+
+private:
+ iterator() : ptr(nullptr) {}
+ iterator(DoubleNode<T>* _ptr) : ptr(_ptr) {}
+
+public:
+
+ const iterator& operator++ () {
+  if (ptr == nullptr) {
+   throw exception("Can't move null iterator!");
+  }
+  ptr = (DoubleNode<T>*)ptr->nxt;
+  return *this;
+ }
+
+ iterator operator++ (int) {
+  iterator ret(*this);
+  this->operator++();
+  return ret;
+ }
+
+ const iterator& operator-- () {
+  if (ptr == nullptr) {
+   throw exception("Can't move null iterator!");
+  }
+  ptr = (DoubleNode<T>*)ptr->prv;
+  return *this;
+ }
+
+ iterator operator-- (int) {
+  iterator ret(*this);
+  this->operator--();
+  return ret;
+ }
+
+ bool operator== (const iterator& other) const {
+  return ptr == other.ptr;
+ }
+
+ bool operator!= (const iterator& other) const {
+  return !((*this) == other);
+ }
+
+ T& operator* () {
+  return ptr->info;
+ }
+};
+
+template<typename T>
+void dList<T>::initialize() {
+ sz = 0;
+ sentinel = new DoubleNode<T>();
+ sentinel->nxt = sentinel;
+ sentinel->prv = sentinel;
+};
+
+template<typename T>
+dList<T>::dList() {
+ initialize();
+}
+
+template<typename T>
+dList<T>::dList(const dList<T>& other) {
+ initialize();
+
+ for (iterator it = other.begin(); it != other.end(); ++it) {
+  push_back(*it);
+ }
+}
+
+template<typename T>
+dList<T>::dList(unsigned sz, const T& element) {
+ initiliaze();
+
+ for (unsigned i = 0; j < sz; ++i) {
+  push_back(element);
+ }
+}
+
+template<typename T>
+dList<T>& dList<T>::operator= (const dList<T>& other) {
+ if (this == &other) {
+  return *this;
+ }
+
+ ~dList();
+ initialize();
+
+ for (iterator it = other.begin(); it != other.end(); ++it) {
+  push_back(*it);
+ }
+
+ return *this;
+}
+
+template<typename T>
+void dList<T>::push_front(const T& element) {
+ add(begin(), element);
+}
+
+template<typename T>
+void dList<T>::push_back(const T& element) {
+ add(sentinel, element);
+}
+
+template<typename T>
+void dList<T>::pop_front() {
+ if (sz == 0) {
+  throw std::length_error("List is empty! Can't pop!");
+ }
+
+ erase(begin());
+}
+
+template<typename T>
+void dList<T>::pop_back() {
+ if (sz == 0) {
+  throw std::length_error("List is empty! Can't pop!");
+ }
+
+ iterator it = end();
+ --it;
+ erase(it);
+}
+
+template<typename T>
+unsigned dList<T>::size() {
+ return sz;
+}
+
+template<typename T>
+typename dList<T>::iterator dList<T>::begin() {
+ iterator it(sentinel);
+ ++it;
+ return it;
+}
+
+template<typename T>
+typename dList<T>::iterator dList<T>::end() {
+ return iterator(sentinel);
+}
+
+template<typename T>
+void dList<T>::add(const iterator& it, const T& elem) {
+ ++sz;
+ DoubleNode<T>* aux = new DoubleNode<T>(elem);
+ aux->nxt = it.ptr;
+ aux->prv = it.ptr->prv;
+ it.ptr->prv->nxt = aux;
+ it.ptr->prv = aux;
+}
+
+template<typename T>
+void dList<T>::erase(const iterator& it) {
+ if (it == end()) {
+  throw std::exception("Can't delete end()!");
+ }
+ --sz;
+
+ DoubleNode<T>* aux = it.ptr;
+ it.ptr->prv->nxt = it.ptr->nxt;
+ ((DoubleNode<T>*)it.ptr->nxt)->prv = (DoubleNode<T>*)(it.ptr->prv);
+ delete aux;
+}
+
+template<typename T>
+void dList<T>::clear() {
+ while (sz) {
+  pop_back();
+ }
+}
+
+template<typename T>
+dList<T>::~dList() {
+ clear();
+ delete sentinel;
+}
+# 38 "dList.h" 2
+}
